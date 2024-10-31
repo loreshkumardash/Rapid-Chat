@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RAPIDCHAT</title>
+    <link rel="stylesheet" href="style.css">
+    <link
+    href="https://cdn.jsdelivr.net/npm/remixicon@4.3.0/fonts/remixicon.css"
+    rel="stylesheet"
+/>
+    
+</head>
+<body>
+    <div class="app">
+        <div class="screen join-screen active">
+            <div class="navbar">
+                <a href="home.html">Home Page</a>
+                <a href="about.html">About Us</a>
+                <a href="contact.html">Contact Us</a>
+            </div>
+            <div class="form">
+                <h2>Lets Join Rapid Chat</h2>
+                <div class="form-input">
+                    <label>Username</label>
+                    <input type="text" id="username" placeholder="Enter your name to join">
+                </div>
+                <div class="form-input">
+                    <button id="join-user">Join</button>
+                </div>
+            </div>
+        </div>
+        <div class="screen chat-screen">
+            <div class="header">
+                <div class="logo"><img src="download.png" height="60" width="60" alt="ChatApp Logo">RAPIDCHAT</div>
+                <button id="exit-chat">Exit</button>
+            </div>
+            <div class="messages">
+            </div>
+            <div class="typebox">
+                <input type="text" id="message-input" placeholder="Enter your message">
+                <button id="send-message"><i class="ri-send-plane-fill"></i></i>
+                   </button>
+            </div>
+        </div>
+    </div>
+    <script type="text/javascript" src="socket.io/socket.io.js"></script>
+    <script type="text/javascript" src="code.js"></script>
+</body>
+
+</html>
