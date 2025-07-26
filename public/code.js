@@ -1,97 +1,107 @@
-(function() {
+(function(){
+
     const app = document.querySelector(".app");
     const socket = io();
 
     let uname;
 
-    // Load the audio file
-    const messageSound = new Audio("/ting.mp3");
+    const joinScreen = app.querySelector(".join-screen");
+    const chatScreen = app.querySelector(".chat-screen");
 
-    app.querySelector(".join-screen #join-user").addEventListener("click", function() {
-        let username = app.querySelector(".join-screen #username").value;
-        if (username.length == 0) return;
-
+    function joinChat() {
+        let username = joinScreen.querySelector("#username").value.trim();
+        if (username.length === 0) {
+            // You might want to show an error to the user here
+            return;
+        }
         socket.emit("newuser", username);
         uname = username;
-        app.querySelector(".join-screen").classList.remove("active");
-        app.querySelector(".chat-screen").classList.add("active");
+        joinScreen.classList.remove("active");
+        chatScreen.classList.add("active");
+        chatScreen.querySelector("#message-input").focus();
+    }
+
+    // --- Event Listeners for Joining Chat ---
+    joinScreen.querySelector("#join-user").addEventListener("click", joinChat);
+    joinScreen.querySelector("#username").addEventListener("keyup", function(event) {
+        if (event.key === "Enter") {
+            joinChat();
+        }
     });
 
     function sendMessage() {
-        let message = app.querySelector(".chat-screen #message-input").value;
-        if (message.length == 0) return;
-
+        let messageText = chatScreen.querySelector("#message-input").value.trim();
+        if (messageText.length === 0) {
+            return;
+        }
         renderMessage("my", {
             username: uname,
-            text: message
+            text: messageText
         });
         socket.emit("chat", {
             username: uname,
-            text: message
+            text: messageText
         });
-        app.querySelector(".chat-screen #message-input").value = "";
+        chatScreen.querySelector("#message-input").value = "";
+        chatScreen.querySelector("#message-input").focus();
     }
 
-    app.querySelector(".chat-screen #send-message").addEventListener("click", function() {
-        sendMessage();
-    });
-
-    // Listen for Enter key press to send message
-    app.querySelector(".chat-screen #message-input").addEventListener("keydown", function(e) {
-        if (e.key === "Enter") {
+    // --- Event Listeners for Sending a Message ---
+    chatScreen.querySelector("#send-message").addEventListener("click", sendMessage);
+    chatScreen.querySelector("#message-input").addEventListener("keyup", function(event) {
+        if (event.key === "Enter") {
             sendMessage();
         }
     });
 
-    app.querySelector(".chat-screen #exit-chat").addEventListener("click", function() {
+    // --- Event Listener for Exiting Chat ---
+    chatScreen.querySelector("#exit-chat").addEventListener("click", function() {
         socket.emit("exituser", uname);
+        // Reloading the page is a simple way to go back to the join screen
         window.location.href = window.location.href;
     });
 
+    // --- Socket Listeners for Server Events ---
     socket.on("update", function(update) {
         renderMessage("update", update);
     });
 
     socket.on("chat", function(message) {
         renderMessage("other", message);
-
-        // Play sound when a message is received from another user
-        messageSound.play();
     });
 
-    function renderMessage(type, message) {
-        let messageContainer = app.querySelector(".chat-screen .messages");
+    // --- Helper function to display messages ---
+    function renderMessage(type, message){
+        let messageContainer = chatScreen.querySelector(".messages");
+        let el = document.createElement("div");
 
-        if (type === "my") {
-            let el = document.createElement("div");
+        if(type === "my"){
             el.setAttribute("class", "message my-message");
             el.innerHTML = `
                 <div>
                     <div class="name">You</div>
-                    <div class="text">${message.text}</div>
+                    <div class="text"></div>
                 </div>
             `;
-            messageContainer.appendChild(el);
-
-        } else if (type === "other") {
-            let el = document.createElement("div");
+            el.querySelector(".text").innerText = message.text;
+        } else if (type === "other"){
             el.setAttribute("class", "message other-message");
             el.innerHTML = `
                 <div>
-                    <div class="name">${message.username}</div>
-                    <div class="text">${message.text}</div>
+                    <div class="name"></div>
+                    <div class="text"></div>
                 </div>
             `;
-            messageContainer.appendChild(el);
-
-        } else if (type === "update") {
-            let el = document.createElement("div");
+            el.querySelector(".name").innerText = message.username;
+            el.querySelector(".text").innerText = message.text;
+        } else if (type === "update"){
             el.setAttribute("class", "update");
             el.innerText = message;
-            messageContainer.appendChild(el);
         }
-
+        
+        messageContainer.appendChild(el);
         // Scroll to the latest message
         messageContainer.scrollTop = messageContainer.scrollHeight - messageContainer.clientHeight;
     }
+
 })();

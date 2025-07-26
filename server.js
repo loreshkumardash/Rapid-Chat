@@ -1,24 +1,31 @@
 const express = require("express");
 const path = require("path");
 const app = express();
-const server = require("http").createServer(app); //Server is created
+const server = require("http").createServer(app);
 const io = require("socket.io")(server);
-//var audio=new Audio('ting.mp3');
-app.use(express.static(path.resolve("./public")));//Path is created
-app.set(express.static(path.join(__dirname + "./public"))); //path gives request
+
+const PORT = process.env.PORT || 3801;
+
+// Serve static files from the "public" directory
+app.use(express.static(path.join(__dirname, "public")));
+
 app.get("/", (req, res) => {
-    return res.sendFile("/public/index.html"); ///Server Request and Responce
+    // Use path.join to create a correct, cross-platform path
+    res.sendFile(path.join(__dirname, "public", "index.html"));
 });
+
 io.on("connection", function (socket) {
     socket.on("newuser", function (username) {
-        socket.broadcast.emit("update", username + "Joined the conversation"); //For joining Newuser
+        socket.broadcast.emit("update", username + " has joined the conversation");
     });
     socket.on("exituser", function (username) {
-        socket.broadcast.emit("update", username + " left the conversation");  //For exit the User
+        socket.broadcast.emit("update", username + " has left the conversation");
     });
     socket.on("chat",function(message){
-        socket.broadcast.emit("chat",message);  //For Chatiing
+        socket.broadcast.emit("chat",message);
     });
 });
 
-server.listen(3801);  //server localhost calling
+server.listen(PORT, () => {
+    console.log(`Server is running on http://localhost:${PORT}`);
+});
