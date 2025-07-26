@@ -1,31 +1,48 @@
 const express = require("express");
 const path = require("path");
-const app = express();
-const server = require("http").createServer(app);
-const io = require("socket.io")(server);
+const http = require("http");
+const socketIO = require("socket.io");
 
-const PORT = process.env.PORT || 3801;
+const app = express();
+const server = http.createServer(app);
+const io = socketIO(server);
+
+let PORT = process.env.PORT || 3802;
 
 // Serve static files from the "public" directory
 app.use(express.static(path.join(__dirname, "public")));
 
+// Serve the main HTML file
 app.get("/", (req, res) => {
-    // Use path.join to create a correct, cross-platform path
     res.sendFile(path.join(__dirname, "public", "index.html"));
 });
 
-io.on("connection", function (socket) {
-    socket.on("newuser", function (username) {
-        socket.broadcast.emit("update", username + " has joined the conversation");
+// Socket.IO event handling
+io.on("connection", (socket) => {
+    socket.on("newuser", (username) => {
+        socket.broadcast.emit("update", `${username} has joined the conversation`);
     });
-    socket.on("exituser", function (username) {
-        socket.broadcast.emit("update", username + " has left the conversation");
+
+    socket.on("exituser", (username) => {
+        socket.broadcast.emit("update", `${username} has left the conversation`);
     });
-    socket.on("chat",function(message){
-        socket.broadcast.emit("chat",message);
+
+    socket.on("chat", (message) => {
+        socket.broadcast.emit("chat", message);
     });
 });
 
-server.listen(PORT, () => {
-    console.log(`Server is running on http://localhost:${PORT}`);
-});
+// Handle port in use error gracefully
+server.listen(PORT)
+    .on("error", (err) => {
+        if (err.code === "EADDRINUSE") {
+            console.error(`❌ Port ${PORT} is already in use.`);
+            console.error(`💡 Please stop the running process or change the port.`);
+            process.exit(1); // Exit to avoid silent failure
+        } else {
+            throw err;
+        }
+    })
+    .on("listening", () => {
+        console.log(`✅ Server is running at http://localhost:${PORT}`);
+    });

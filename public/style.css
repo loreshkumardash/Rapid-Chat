@@ -9,21 +9,10 @@ body {
     height: 100vh;
     display: flex;
     justify-content: center;
-    background-image:linear-gradient(red,cyan);
+    background-image:linear-gradient(#0047be,#fdf023);
     background-size: cover;
 }
 
-.app {
-    position: fixed;
-    width: 100%;
-    height: 100%;
-    max-width: 600px;
-    background: #fff;
-    border-left: 1px solid #eee;
-    border-right: 1px solid #eee;
-    background-color: #ebecec;
-    background-size: cover;
-}
 
 .app>.screen {
     display: none;
@@ -32,7 +21,7 @@ body {
 .app>.screen.active {
     display: block;
     width: 100%;
-    height: 100%;
+    height: 94%;
 }
 
 .screen .form {
@@ -124,8 +113,6 @@ body {
 .chat-screen .messages {
     width: 100%;
     height: calc(100% - 100px);
-    background-image: linear-gradient(140deg, #EADEDB 0%, #BC70A4 50%, #BFD641 75%);
-    background-size: cover;
     overflow: auto;
 }
 
@@ -177,48 +164,43 @@ body {
     height: 50px;
     font-size: 18px;
     border: 1px solid black;
-    border-radius: 10%;
 }
 
 .chat-screen .typebox button {
     width: 80px;
     height: 100%;
-    /* background: #111; */
-    /* color: #eee; */
     font-size: 46px;
     outline: none;
-    /* border: none; */
-    border: 1px solid black;
-    border-radius: 30%;
+    border: 2px solid black;
+    margin-left: 5px;
     cursor: pointer;
-
 }
 #join-user{
     
-    background-color: black;
-    color: cyan;
+    background-color: rgb(35, 91, 246);
+    color: rgb(255, 255, 255);
     border-radius: 20px;
     box-shadow: 0 0 20px rgba(98, 0, 234, 0.5);
 }
 #join-user:hover{
-    background-color: cyan;
-    color: black;
+    background-color: rgb(0, 4, 255);
+    color: rgb(255, 255, 255);
     box-shadow: 0 0 40px rgb(98, 0, 234,1);
 }
 #username{
     border-radius: 6px;
 }
 .screen{
-    background-image:linear-gradient(cyan,red);
+    background-image:linear-gradient(#fdf023,#0047be);
 }
 #exit-chat{
-    background-image:linear-gradient(to right,red,yellow);
+    background-image:linear-gradient(to right,#0047be,#fdf023);
     color: black;
 }
 #exit-chat:hover{
-    background-image:linear-gradient(to left,red,yellow);
+    background-image:linear-gradient(to right,#fdf023,#0047be);
     color: black;
-    box-shadow: 0 0 30px rgba(247, 243, 10, 1);
+    box-shadow: 0 0 10px rgba(247, 243, 10, 1);
 }
 .navbar {
     background-color: black;
@@ -236,4 +218,39 @@ body {
 }
 .navbar a:hover {
     color: #00ff00;
+}
+
+/* Base for glass effect */
+.glass-effect {
+    background: rgba(255, 255, 255, 0.1); /* translucent white */
+    backdrop-filter: blur(10px); /* blur background */
+    -webkit-backdrop-filter: blur(10px); /* Safari support */
+    border-radius: 16px;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+}
+
+/* Optional: make form look glassy too */
+.form {
+    padding: 2rem;
+    margin-top: 2rem;
+}
+
+/* Targeting the screens with glass */
+.join-screen,
+.chat-screen {
+    padding: 2rem;
+    margin: 1rem;
+    min-height: 80vh;
+}
+
+.join-screen,
+.chat-screen {
+    background: rgba(255, 255, 255, 0.08); /* light tint */
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-radius: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+    transition: all 0.3s ease;
 }
