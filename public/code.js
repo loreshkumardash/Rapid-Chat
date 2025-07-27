@@ -8,6 +8,8 @@
     const joinScreen = app.querySelector(".join-screen");
     const chatScreen = app.querySelector(".chat-screen");
 
+    const messageSound = new Audio("/ting.mp3"); // Assumes audio file is in public/mp3/
+
     function joinChat() {
         let username = joinScreen.querySelector("#username").value.trim();
         if (username.length === 0) {
@@ -19,6 +21,11 @@
         joinScreen.classList.remove("active");
         chatScreen.classList.add("active");
         chatScreen.querySelector("#message-input").focus();
+        // Play sound when user joins the chat
+        messageSound.play().catch(e => {
+            // Catch any errors if the browser blocks autoplay
+            console.error("Audio play failed on join:", e);
+        });
     }
 
     // --- Event Listeners for Joining Chat ---
@@ -41,6 +48,10 @@
         socket.emit("chat", {
             username: uname,
             text: messageText
+        });
+        // Play sound for the sender
+        messageSound.play().catch(e => {
+            console.error("Audio play failed:", e);
         });
         chatScreen.querySelector("#message-input").value = "";
         chatScreen.querySelector("#message-input").focus();
@@ -68,6 +79,10 @@
 
     socket.on("chat", function(message) {
         renderMessage("other", message);
+        // Play sound for the receiver
+        messageSound.play().catch(e => {
+            console.error("Audio play failed:", e);
+        });
     });
 
     // --- Helper function to display messages ---
