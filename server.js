@@ -7,7 +7,7 @@ const app = express();
 const server = http.createServer(app);
 const io = socketIO(server);
 
-const PORT = process.env.PORT || 3801;
+const PORT = process.env.PORT || 3800;
 
 // Serve static files from the "public" directory. This is the correct way to do it.
 app.use(express.static(path.join(__dirname, "public")));
